@@ -18,9 +18,10 @@ def get_size(path):
     except OSError:
         return 0
 
-def to_MB(size, type_count):
+def convert(size, type_count):
     type = 1024**(type_count+1)
-    return float(str(size//type) + "." + str(size%type)[:2])
+    size /= type
+    return float(f"{size:.2f}")
 
 
 def counting(direct, type_count, field):
@@ -28,9 +29,9 @@ def counting(direct, type_count, field):
     direct = Path(direct)
     files = []
     for child in direct.iterdir():
-        if to_MB(get_size(child), type_count) >= field:
+        if convert(get_size(child), type_count) >= field:
             paths.append(child)
-            files.append(f"{child.name} -> {to_MB(get_size(child), type_count)} {types_of_count[type_count]}")
+            files.append(f"{child.name} -> {convert(get_size(child), type_count)} {types_of_count[type_count]}")
     return files
 
 

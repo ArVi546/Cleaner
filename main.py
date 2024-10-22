@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         self.field_enter.textChanged.connect(self.field_enter_command)
 
         self.type_enter = QComboBox(self)
-        self.type_enter.addItems(["KB", "MB", "GB"])
+        self.type_enter.addItems(types_of_count)
         self.type_enter.setFixedWidth(50)
         self.type_enter.move(575, 20)
         self.type_enter.currentIndexChanged.connect(self.type_enter_command)
