@@ -23,16 +23,24 @@ def convert(size, type_count):
     size /= type
     return float(f"{size:.2f}")
 
+def dir_size(bts, ending='B'):
+    for item in ["", "K", "M", "G", "T", "P"]:
+        if bts < 1024:
+            return f"{bts:.2f} {item}{ending}"
+        bts /= 1024
 
 def counting(direct, type_count, field):
     paths.clear()
     direct = Path(direct)
     files = []
+    total = 0
+
     for child in direct.iterdir():
+        total += get_size(child)
         if convert(get_size(child), type_count) >= field:
             paths.append(child)
             files.append(f"{child.name} -> {convert(get_size(child), type_count)} {types_of_count[type_count]}")
-    return files
+    return files, dir_size(total)
 
 
 

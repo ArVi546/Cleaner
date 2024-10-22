@@ -1,12 +1,9 @@
 import sys
 import os
 import shutil
-from pathlib import Path
 from backwork import *
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QSize, Qt, QThread
 from PyQt6.QtWidgets import *
-
-types_of_count = ["KB", "MB", "GB"]
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -45,6 +42,7 @@ class MainWindow(QMainWindow):
         self.exit = QListWidget(self)
         self.exit.move(20,100)
         self.exit.setFixedSize(300, 250)
+        self.exit.clicked.connect(self.setScanButton)
 
         self.search_button = QPushButton(self)
         self.search_button.setText("Search")
@@ -61,12 +59,22 @@ class MainWindow(QMainWindow):
         self.open_button.clicked.connect(self.open_file)
         self.open_button.move(330, 100)
 
+        self.scan_button = QPushButton(self)
+        self.scan_button.setText("Scan Directory")
+        self.scan_button.clicked.connect(self.scanChooseFile)
+        self.scan_button.move(330, 180)
+        self.scan_button.setDisabled(True)
+
+        self.total_text = QLabel(self)
+        self.total_text.move(20, 350)
+        self.total_text.setFixedWidth(200)
+        self.total_text.setText("Total size directory:")
+
         self.author = QLabel(self)
         self.author.move(600, 370)
         self.author.setText("by ArVi")
 
         self.setFixedSize(QSize(650, 400))
-
     def dir_enter_command(self):
         self.direct = self.dir_enter.text()
 
@@ -81,7 +89,8 @@ class MainWindow(QMainWindow):
 
     def start_program(self):
         self.exit.clear()
-        files = counting(self.direct, self.type, self.field)
+        files, total = counting(self.direct, self.type, self.field)
+        self.total_text.setText(f"Total size directory: {total}")
         self.exit.addItems(files)
 
     def search_command(self):
@@ -93,10 +102,10 @@ class MainWindow(QMainWindow):
             os.system(f"explorer {self.paths[self.exit.currentRow()].resolve()}")
         except:
             pass
+
     def delete_file(self):
         try:
             if Path(self.paths[self.exit.currentRow()].resolve()).is_dir():
-                #print(str(self.paths[self.exit.currentRow()].resolve()))
                 shutil.rmtree(self.paths[self.exit.currentRow()].resolve())
             else:
                 os.remove(self.paths[self.exit.currentRow()].resolve())
@@ -104,6 +113,15 @@ class MainWindow(QMainWindow):
         except:
             pass
 
+    def setScanButton(self):
+        self.scan_button.setDisabled(not(self.paths[self.exit.currentRow()].resolve().is_dir()))
+
+    def scanChooseFile(self):
+        self.dir_enter.setText(str(self.paths[self.exit.currentRow()].resolve()))
+        self.start_program()
+
+    def test(self):
+        print("Test Complet!")
 
 
 
