@@ -11,7 +11,7 @@ types_of_count = ["KB", "MB", "GB"]
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("CompCleaner")
+        self.setWindowTitle("Cleaner")
 
         self.direct = "."
         self.field = 0
@@ -52,12 +52,12 @@ class MainWindow(QMainWindow):
         self.search_button.move(330, 20)
 
         self.delete_button = QPushButton(self)
-        self.delete_button.setText("Delete")
+        self.delete_button.setText("Delete File")
         self.delete_button.clicked.connect(self.delete_file)
         self.delete_button.move(330, 140)
 
         self.open_button = QPushButton(self)
-        self.open_button.setText("Open")
+        self.open_button.setText("Open File")
         self.open_button.clicked.connect(self.open_file)
         self.open_button.move(330, 100)
 
@@ -71,7 +71,10 @@ class MainWindow(QMainWindow):
         self.direct = self.dir_enter.text()
 
     def field_enter_command(self):
-        self.field = int(self.field_enter.text())
+        try:
+            self.field = int(self.field_enter.text())
+        except:
+            pass
 
     def type_enter_command(self, s):
         self.type = s
@@ -86,14 +89,20 @@ class MainWindow(QMainWindow):
         self.dir_enter.setText(str(self.wb_patch.url()).replace("file:///", ""))
 
     def open_file(self):
-        os.system(f"explorer {self.paths[self.exit.currentRow()].resolve()}")
+        try:
+            os.system(f"explorer {self.paths[self.exit.currentRow()].resolve()}")
+        except:
+            pass
     def delete_file(self):
-        if Path(self.paths[self.exit.currentRow()].resolve()).is_dir():
-            #print(str(self.paths[self.exit.currentRow()].resolve()))
-            shutil.rmtree(self.paths[self.exit.currentRow()].resolve())
-        else:
-            os.remove(self.paths[self.exit.currentRow()].resolve())
-        self.start_program()
+        try:
+            if Path(self.paths[self.exit.currentRow()].resolve()).is_dir():
+                #print(str(self.paths[self.exit.currentRow()].resolve()))
+                shutil.rmtree(self.paths[self.exit.currentRow()].resolve())
+            else:
+                os.remove(self.paths[self.exit.currentRow()].resolve())
+            self.start_program()
+        except:
+            pass
 
 
 
